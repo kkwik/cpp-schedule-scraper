@@ -72,7 +72,7 @@ element = driver.find_elements_by_css_selector('select#ctl00_ContentPlaceHolder1
 semesters = []
 tmp = []
 for el in element:
-	if el.text in allowed_semesters:
+	if args.semester is None or el.text in allowed_semesters:
 		semesters.append(Semester(name=el.text, id=el.get_attribute('value'))) # ex (Fall Semester 2020, 2207). value attribute is used to identify each terms menu item
 	tmp.append(el.text)
 if len(semesters) == 0:
