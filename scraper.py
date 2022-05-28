@@ -13,7 +13,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-S', '--semester', help='Select semesters to scrape. Expected as a string of comma seperated semester names', type=str)
 parser.add_argument('-q', '--quiet', action='store_true')
 parser.add_argument('-d', '--display', action='store_true')
-parser.add_argument('-s', '--seperate-output', help='Output each semester to a seperate file', action='store_true')
+parser.add_argument('-c', '--combine-output', help='Output each semester to the same file', action='store_true')
 args = parser.parse_args()
 
 # Disable print
@@ -150,18 +150,19 @@ for semester, courseEntryHTML in tqdm(subjectCoursesHTML, disable=tqdmDisabled):
 Stage 4 - Convert dictionaries into json
 '''
 print('Writing to file...')
-# Output to seperate files
-if args.seperate_output:
+# Output to one file
+if args.combine_output:
+	jsonCourseList = json.dumps(courseList)
+	with open('data.json', 'w') as outputFile:
+		outputFile.write(jsonCourseList)
+# Output to separate files
+else:
 	for semester in semesters:
 		tmp = [course for course in courseList if course['Semester'] == semester.name]
 		jsonCourseList = json.dumps(tmp)
 		with open(f'{semester.name}.json', 'w') as outputFile:
 			outputFile.write(jsonCourseList)
-# Output to one file
-else:
-	jsonCourseList = json.dumps(courseList)
-	with open('data.json', 'w') as outputFile:
-		outputFile.write(jsonCourseList)
+	
 
 
 print('Complete.')
